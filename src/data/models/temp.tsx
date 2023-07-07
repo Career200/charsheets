@@ -129,3 +129,216 @@ const baseSkills = {
 		}
 	}
 };
+const CONST = {
+	role: {
+		special: {
+			authority: 'Authority',
+			charismaticLeadership: 'Charismatic Leadership',
+			combatSense: 'Combat Sense',
+			credibility: 'Credibility',
+			family: 'Family',
+			interface: 'Interface',
+			juryRig: 'Jury Rig',
+			medicalTech: 'Medical Tech',
+			resources: 'Resources',
+			streetdeal: 'Streetdeal',
+			customSpecialAbility: 'Custom Special Ability'
+		}
+	},
+	stats: {
+		int: {
+			short: 'INT',
+			full: 'Intellect',
+			skills: {
+				accounting: 'Accounting',
+				anthropology: 'Anthropology',
+				awarenessNotice: 'Awareness/Notice',
+				biology: 'Biology',
+				botany: 'Botany',
+				chemistry: 'Chemistry',
+				composition: 'Composition',
+				diagnoseIllness: 'Diagnose illness',
+				educationGeneralKnowledge: 'Education & General knowledge',
+				expert: 'Expert',
+				gamble: 'Gamble',
+				geology: 'Geology',
+				hideEvade: 'Hide/Evade',
+				history: 'History',
+				languages: 'Languages',
+				librarySearch: 'Library search',
+				mathematics: 'Mathematics',
+				physics: 'Physics',
+				programming: 'Programming',
+				shadowTrack: 'Shadow/Track',
+				stockMarket: 'Stock market',
+				systemKnowledge: 'System knowledge',
+				teaching: 'Teaching',
+				wildernessSurvival: 'Wilderness Survival',
+				zoology: 'Zoology'
+			}
+		},
+		ref: {
+			short: 'REF',
+			full: 'Reflexes',
+			skills: {
+				archery: 'Archery',
+				athletics: 'Athletics',
+				brawling: 'Brawling',
+				dance: 'Dance',
+				dodgeEscape: 'Dodge/Escape',
+				driving: 'Driving',
+				fencing: 'Fencing',
+				handgun: 'Handgun',
+				heavyWeapons: 'Heavy Weapons',
+				martialArts: 'MartialArts',
+				melee: 'Melee',
+				motorcycle: 'Motorcycle',
+				operateHeavyMachinery: 'Operate Heavy Machinery',
+				pilotGyro: 'Pilot Gyro',
+				pilotFixedWing: 'Pilot Fixed Wing',
+				pilotDirigible: 'Pilot Dirigible',
+				pilotVectorThrustVehicle: 'Pilot Vector Thrust Vehicle',
+				rifle: 'Rifle',
+				stealth: 'Stealth',
+				submachinegun: 'Submachinegun'
+			}
+		},
+		tech: {
+			short: 'TECH',
+			full: 'Tech',
+			skills: {
+				aeroTech: 'Aero Tech',
+				avTech: 'AV Tech',
+				basicTech: 'Basic Tech',
+				cryotankOperation: 'Cryotank Operation',
+				cyberdeckDesign: 'Cyberdeck Design',
+				cyberTech: 'Cyber Tech',
+				demolitions: 'Demolitions',
+				disguise: 'Disguise',
+				electronics: 'Electronics',
+				electricalSecurity: 'Electrical Security',
+				firstAid: 'First Aid',
+				forgery: 'Forgery',
+				gyroTech: 'Gyro Tech',
+				paintDraw: 'Paint or Draw',
+				photoFilm: 'Photo & Film',
+				pharmaceuticals: 'Pharmaceuticals',
+				pickLock: 'Pick Lock',
+				pickPocket: 'Pick Pocket',
+				playInstrument: 'PlayInstrument',
+				weaponsmith: 'Weaponsmith'
+			}
+		},
+		cool: {
+			short: 'COOL',
+			full: 'Cool',
+			skills: {
+				Interrogation: {
+					name: 'Interrogation'
+				},
+				Intimidate: {
+					name: 'Intimidate'
+				},
+				Oratory: {
+					name: 'Oratory'
+				},
+				ResistTortureDrugs: {
+					name: 'Resist Torture/Drugs'
+				},
+				Streetwise: {
+					name: 'Streetwise'
+				}
+			}
+		},
+		attr: {
+			short: 'ATTR',
+			full: 'Attractiveness',
+			skills: {
+				PersonalGrooming: {
+					name: 'Personal Grooming'
+				},
+				WardrobeStyle: {
+					name: 'Wardrobe & Style'
+				}
+			}
+		},
+		luck: {
+			short: 'LUCK',
+			full: 'Luck'
+		},
+		ma: {
+			short: 'MA',
+			full: 'Movement Allowance',
+			computed: {
+				run: {
+					name: 'RUN'
+				},
+				leap: {
+					name: 'LEAP'
+				}
+			}
+		},
+		bt: {
+			short: 'BT',
+			full: 'Body Type',
+			skills: {
+				Endurance: {
+					name: 'Endurance'
+				},
+				StrengthFeat: {
+					name: 'Strength Feat'
+				},
+				Swimming: {
+					name: 'Swimming'
+				}
+			},
+			computed: {
+				bt: {
+					name: 'Very Weak',
+					btm: 0
+				},
+				save: {
+					name: 'save'
+				},
+				carry: {
+					name: 'carry'
+				},
+				deadlift: {
+					name: 'deadlift'
+				}
+			}
+		},
+		emp: {
+			short: 'EMP',
+			full: 'Empathy',
+			skills: {
+				HumanPerception: {
+					name: 'Human Perception'
+				},
+				Interview: {
+					name: 'Interview'
+				},
+				Leadership: {
+					name: 'Leadership'
+				},
+				Seduction: {
+					name: 'Seduction'
+				},
+				Social: {
+					name: 'Social'
+				},
+				PersuasionFastTalk: {
+					name: 'Persuasion & Fast Talk'
+				},
+				Perform: {
+					name: 'Perform'
+				}
+			},
+			computed: {
+				humanity: {
+					name: 'Humanity'
+				}
+			}
+		}
+	}
+};

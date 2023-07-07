@@ -16,14 +16,9 @@ const TooltipWrapper: React.FC<TooltipWrapperProps> = ({
 	children
 }: PropsWithChildren<TooltipWrapperProps>) => {
 	const [showTooltip, setShowTooltip] = useState(false);
-	const [tooltipPosition, setTooltipPosition] = useState<{
-		x: number;
-		y: number;
-	}>({ x: 0, y: 0 });
 
 	const handleMouseEnter = (event: MouseEvent<HTMLDivElement>) => {
 		setShowTooltip(true);
-		setTooltipPosition({ x: event.clientX, y: event.clientY });
 	};
 
 	const handleMouseLeave = () => {
@@ -39,12 +34,8 @@ const TooltipWrapper: React.FC<TooltipWrapperProps> = ({
 			{children}
 			{showTooltip && (
 				<div
+					className="absolute w-fit -bottom-12 p-2 bg-black text-lg whitespace-nowrap"
 					style={{
-						position: 'absolute',
-						top: tooltipPosition.y + 10,
-						left: tooltipPosition.x + 10,
-						padding: '0.5rem',
-						backgroundColor: 'black',
 						zIndex: 9999,
 						...(boxStyle ?? {})
 					}}
