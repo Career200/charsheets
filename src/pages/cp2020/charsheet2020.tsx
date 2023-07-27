@@ -205,7 +205,7 @@ export default function Charsheet2020() {
 
 	return (
 		<form
-			className="p-2 min-h-full bg-cyan-950 text-white"
+			className="p-2 h-full bg-cyan-950 text-white"
 			onSubmit={(e) => {
 				e.preventDefault();
 				saveCharacter();

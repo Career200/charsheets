@@ -21,8 +21,8 @@ body {
 ::-webkit-scrollbar {
 	width: 10px;
 	height: 10px;
-	background-color: var(--background);
+	background-color: black;
 }
 ::-webkit-scrollbar-thumb {
-	background-color: var(--accent);
+	background-color: var(--secondary);
 }

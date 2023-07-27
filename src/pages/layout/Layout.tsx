@@ -2,10 +2,11 @@ import { Link, Outlet } from 'react-router-dom';
 
 export default function Layout() {
 	return (
-		<div className="h-[100vh]">
-			<main className="relative h-full text-white">
+		<div className="flex flex-col flex-nowrap h-[100vh]">
+			<main className="relative flex-1 bg-violet-950 text-white">
 				<Outlet />
 			</main>
+			<div className="flex-none bg-black w-full md:h-14 h-20"> hidden </div>
 			<nav className="fixed bottom-0 w-full md:h-14 h-20 px-8 bg-black text-orange-500">
 				<ul className="relative flex justify-between items-center gap-8 md:list-disc list-none">
 					<li>
