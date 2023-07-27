@@ -7,15 +7,15 @@ export default function Skillbox({
 }: {
 	name: string;
 	value: number;
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	inputAttr?: React.DetailedHTMLProps<
 		React.InputHTMLAttributes<HTMLInputElement>,
 		HTMLInputElement
 	>;
-	inputClass: string;
+	inputClass?: string;
 }) {
 	return (
-		<div className="p-2 border-2 border-orange-900">
+		<div className="hover:outline hover:outline-orange-600 p-2 border-2 border-orange-900">
 			<p>
 				{name}:{' '}
 				<input

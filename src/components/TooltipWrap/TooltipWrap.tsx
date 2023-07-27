@@ -1,8 +1,8 @@
 import React, {
 	useState,
 	PropsWithChildren,
-	ReactNode,
-	MouseEvent
+	ReactNode
+	//MouseEvent
 } from 'react';
 
 interface TooltipWrapperProps extends PropsWithChildren {
@@ -17,7 +17,7 @@ const TooltipWrapper: React.FC<TooltipWrapperProps> = ({
 }: PropsWithChildren<TooltipWrapperProps>) => {
 	const [showTooltip, setShowTooltip] = useState(false);
 
-	const handleMouseEnter = (event: MouseEvent<HTMLDivElement>) => {
+	const handleMouseEnter = (/* event: MouseEvent<HTMLDivElement> */) => {
 		setShowTooltip(true);
 	};
 

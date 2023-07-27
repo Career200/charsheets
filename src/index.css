@@ -4,11 +4,25 @@
 * {
 	box-sizing: border-box;
 	margin: 0;
+	transition: 300ms;
 }
 html {
 	height: 100%;
+	--text: #f7e18a;
+	--background: #2d102d;
+	--primary: #e8e84f;
+	--secondary: #701e70;
+	--accent: #7cb27c;
 }
 body {
 	height: auto;
 	min-height: 100vh;
+}
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+	background-color: var(--background);
+}
+::-webkit-scrollbar-thumb {
+	background-color: var(--accent);
 }
