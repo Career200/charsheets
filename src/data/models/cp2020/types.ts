@@ -105,7 +105,7 @@ export interface Char {
 	role: Role;
 	stats: AllStatsType;
 	computed?: ComputedType;
-	notes?: string[];
+	notes?: string;
 	desc?: string;
 	id?: string;
 }

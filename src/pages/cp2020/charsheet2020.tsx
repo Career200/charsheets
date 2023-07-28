@@ -21,11 +21,48 @@ import {
 	saveData
 } from '../../data/saveLocal/dataManager';
 
+const colorSwitch = (role: Role['name']) => {
+	switch (role) {
+		case 'SOLO': {
+			return 'bg-terminal-800';
+		}
+		case 'NOMAD': {
+			return 'bg-blood-800';
+		}
+		case 'ROCKERBOY': {
+			return 'bg-stone-900';
+		}
+		case 'NETRUNNER': {
+			return 'bg-slate-950';
+		}
+		default: {
+			return 'bg-cyan-950';
+		}
+	}
+};
+
 export default function Charsheet2020() {
 	const [listVisible, setListVisible] = useState(false);
 	const [selectedStat, setSelectedStat] = useState<StatString>('INT');
 	const [char, setChar] = useState<Char>(baseChar);
+	const [notesProxy, setNotesProxy] = useState(char.notes);
+
+	const loadWindowRef = useRef<any>();
+	useEffect(() => {
+		function handleClickOutside(e: MouseEvent) {
+			if (loadWindowRef.current && !loadWindowRef.current.contains(e.target)) {
+				setListVisible(false);
+			}
+		}
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [loadWindowRef]);
+
 	const charMap = useRef<SpaceMap>();
+	const totalStats = useRef([]);
+	const totalSkills = useRef(0);
 
 	useEffect(() => {
 		getMap().then((map) => (charMap.current = map));
@@ -201,11 +238,14 @@ export default function Charsheet2020() {
 	const loadCharacter = async (id: string) => {
 		const char = await getData(id);
 		setChar(char);
+		setNotesProxy(char.notes);
 	};
 
 	return (
 		<form
-			className="p-2 h-full bg-cyan-950 text-white"
+			className={`p-2 h-full text-white ${colorSwitch(
+				char.role.name
+			)} font-space`}
 			onSubmit={(e) => {
 				e.preventDefault();
 				saveCharacter();
@@ -213,7 +253,7 @@ export default function Charsheet2020() {
 			onKeyDown={(e) => e.key !== 'Enter' && e.key !== ' '}
 		>
 			<div className="flex items-center justify-between p-2 border-2 border-black">
-				<div className="flex flex-wrap gap-2">
+				<div className="px-4 grow flex justify-between flex-wrap gap-2">
 					<div className="flex items-center gap-2">
 						<span>Name: </span>
 						<input
@@ -241,6 +281,17 @@ export default function Charsheet2020() {
 							))}
 						</select>
 					</div>
+					<div className="flex items-center flex-wrap gap-4">
+						WiP
+						<p>
+							Total <span className="text-terminal-400">STATS:</span>{' '}
+							{totalStats.current}
+						</p>
+						<p>
+							Total <span className="text-terminal-400">SKILLS:</span>{' '}
+							{totalSkills.current}
+						</p>
+					</div>
 				</div>
 				<div className="relative flex flex-wrap justify-end gap-2">
 					<button
@@ -257,9 +308,12 @@ export default function Charsheet2020() {
 						Load character:
 					</button>
 					{listVisible && charMap.current !== undefined && (
-						<div className="absolute top-[105%] left-4 min-h-12 w-full p-2 border-orange-800 bg-gray-800">
+						<div
+							ref={loadWindowRef}
+							className="absolute top-[105%] left-4 min-h-12 max-h-[75vh] overflow-auto w-full p-2 border-orange-800 bg-gray-800"
+						>
 							<p
-								className="px-2 bg-gray-950 hover:bg-gray-700 cursor-pointer"
+								className="p-2 bg-gray-950 hover:bg-gray-700 cursor-pointer"
 								onClick={() => {
 									handleNewCharacter();
 									setListVisible(false);
@@ -267,22 +321,40 @@ export default function Charsheet2020() {
 							>
 								Create new character
 							</p>
-							{Object.entries(charMap.current!).map(([key, value]) => (
+							<hr />
+							{Object.entries(charMap.current!).map(([key, value], i) => (
 								<p
-									className="px-2 hover:bg-gray-700 cursor-pointer"
+									className="p-2 border-b-[1px] border-gray-500 hover:bg-gray-700 cursor-pointer"
 									key={key}
 									onClick={() => {
 										loadCharacter(key);
 										setListVisible(false);
 									}}
 								>
-									{value}
+									{i + 1}. {value}
 								</p>
 							))}
 						</div>
 					)}
 				</div>
 			</div>
+			<h4 className="bg-black text-terminal-400 mt-4 py-2 px-4 text-lg">
+				Notes:
+			</h4>
+			<textarea
+				autoComplete="off"
+				className="w-full min-h-[4rem] px-2 bg-black text-terminal-400"
+				value={notesProxy ?? ''}
+				onChange={(e) => {
+					setNotesProxy(e.target.value);
+				}}
+				onBlur={(e) => {
+					setChar((prev) => {
+						return { ...prev, notes: e.target.value };
+					});
+				}}
+			></textarea>
+			<hr />
 			<div className="stats p-4 flex justify-around items-center gap-2">
 				<div className="flex flex-wrap gap-4">
 					{Object.keys(statMap).map((stat, index) => (
@@ -306,7 +378,7 @@ export default function Charsheet2020() {
 					))}
 				</div>
 				<div className="flex flex-wrap gap-4">
-					<div className="p-1 w-[100px] border-2 border-orange-900">
+					<div className="p-1 w-[120px] border-2 border-orange-900">
 						<h4 className="font-bold">BTM</h4>
 						<p>{char.computed?.Body.type}</p>
 						<p className="text-xl text-cyan-200">{char.computed?.Body.btm}</p>
@@ -332,31 +404,41 @@ export default function Charsheet2020() {
 				</div>
 			</div>
 			<hr />
-			<div className="skills p-2 flex flex-wrap gap-2">
-				<Skillbox
-					name={char.role.special.name}
-					value={char.role.special.value || 0}
-					onChange={(e) => handleSpecialAbilityChange(Number(e.target.value))}
-					inputClass="ml-2 outline-orange-400 outline"
-					inputAttr={{ max: 10, min: 0 }}
-				/>
-				{Object.entries(char.stats[selectedStat].skills ?? {}).map(
-					([key, value], index) => (
-						<Skillbox
-							name={value.name}
-							value={value.value}
-							onChange={(e) =>
-								handleSkillChange(
-									key as AllSkillsStrings,
-									Number(e.currentTarget.value)
-								)
-							}
-							inputClass="hover:animate-pulse"
-							key={key + index}
-							inputAttr={{ max: 10, min: 0 }}
-						/>
-					)
-				)}
+			<div className="p-2">
+				<div className="flex items-center gap-4">
+					<Skillbox
+						name={char.role.special.name}
+						value={char.role.special.value || 0}
+						onChange={(e) => handleSpecialAbilityChange(Number(e.target.value))}
+						inputClass="ml-2 outline-orange-400 outline"
+						inputAttr={{ max: 10, min: 0 }}
+					/>
+					<p>
+						<span className="text-terminal-400 text-2xl font-bold">
+							{selectedStat}
+						</span>{' '}
+						skills:
+					</p>
+				</div>
+				<div className="p-2 flex flex-wrap gap-2">
+					{Object.entries(char.stats[selectedStat].skills ?? {}).map(
+						([key, value], index) => (
+							<Skillbox
+								name={value.name}
+								value={value.value}
+								onChange={(e) =>
+									handleSkillChange(
+										key as AllSkillsStrings,
+										Number(e.currentTarget.value)
+									)
+								}
+								inputClass="hover:animate-pulse"
+								key={key + index}
+								inputAttr={{ max: 10, min: 0 }}
+							/>
+						)
+					)}
+				</div>
 			</div>
 			<hr />
 		</form>

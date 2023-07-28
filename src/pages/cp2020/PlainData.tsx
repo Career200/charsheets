@@ -4,7 +4,7 @@ export default function PlainData() {
 			<h2 id="stats">Stats</h2>
 			<div className="  flex flex-row justify-center items-center gap-8 lg:gap-0 flex-wrap lg:items-start">
 				<div className="stat lg:w-1/2 xl:w-1/3   min-w-1/3 min-h-1/3">
-					<h3 className="my-4 text-2xl text-green-800 font-bold">
+					<h3 className="my-4 text-2xl text-terminal-500 font-bold">
 						Intelligence (INT)
 					</h3>
 					<p className="text-lg">
@@ -43,7 +43,7 @@ export default function PlainData() {
 					</ul>
 				</div>
 				<div className="stat lg:w-1/2 xl:w-1/3   min-w-1/3 min-h-1/3">
-					<h3 className="my-4 text-2xl text-green-800 font-bold">
+					<h3 className="my-4 text-2xl text-terminal-500 font-bold">
 						Reflexes (REF)
 					</h3>
 					<p className="text-lg">
@@ -78,7 +78,9 @@ export default function PlainData() {
 					</ul>
 				</div>
 				<div className="stat lg:w-1/2 xl:w-1/3   min-w-1/3 min-h-1/3">
-					<h3 className="my-4 text-2xl text-green-800 font-bold">Cool (CL)</h3>
+					<h3 className="my-4 text-2xl text-terminal-500 font-bold">
+						Cool (CL)
+					</h3>
 					<p className="text-lg">
 						This index measures how well the character stands up to stress,
 						feaer, pressure, physical pain and/or torture. In determining your
@@ -104,7 +106,7 @@ export default function PlainData() {
 					<p className="text-lg">REPUTATION</p>
 				</div>
 				<div className="stat lg:w-1/2 xl:w-1/3   min-w-1/3 min-h-1/3">
-					<h3 className="my-4 text-2xl text-green-800 font-bold">
+					<h3 className="my-4 text-2xl text-terminal-500 font-bold">
 						Technical Ability (TECH)
 					</h3>
 					<p className="text-lg">
@@ -141,7 +143,9 @@ export default function PlainData() {
 					</ul>
 				</div>
 				<div className="stat lg:w-1/2 xl:w-1/3   min-w-1/3 min-h-1/3">
-					<h3 className="my-4 text-2xl text-green-800 font-bold">Luck (LK)</h3>
+					<h3 className="my-4 text-2xl text-terminal-500 font-bold">
+						Luck (LK)
+					</h3>
 					<p className="text-lg">
 						This is the intangible &quot;something&quot; that throws the balance
 						of events into your favor. Your luck represents how many points you
@@ -153,7 +157,7 @@ export default function PlainData() {
 					</p>
 				</div>
 				<div className="stat lg:w-1/2 xl:w-1/3   min-w-1/3 min-h-1/3">
-					<h3 className="my-4 text-2xl text-green-800 font-bold">
+					<h3 className="my-4 text-2xl text-terminal-500 font-bold">
 						Attractiveness (ATT)
 					</h3>
 					<p className="text-lg">
@@ -169,7 +173,7 @@ export default function PlainData() {
 					</ul>
 				</div>
 				<div className="stat lg:w-1/2 xl:w-1/3   min-w-1/3 min-h-1/3">
-					<h3 className="my-4 text-2xl text-green-800 font-bold">
+					<h3 className="my-4 text-2xl text-terminal-500 font-bold">
 						Movement Allowance (MA)
 					</h3>
 					<p className="text-lg">
@@ -192,7 +196,7 @@ export default function PlainData() {
 					</ul>
 				</div>
 				<div className="stat lg:w-1/2 xl:w-1/3   min-w-1/3 min-h-1/3">
-					<h3 className="my-4 text-2xl text-green-800 font-bold">Empathy</h3>
+					<h3 className="my-4 text-2xl text-terminal-500 font-bold">Empathy</h3>
 					<p className="text-lg">
 						This stat represents how well you relate to other living things - a
 						measure of charisma and sympathetic emotions. In a world of
@@ -225,7 +229,7 @@ export default function PlainData() {
 					</ul>
 				</div>
 				<div className="stat lg:w-1/2 xl:w-1/3   min-w-1/3 min-h-1/3">
-					<h3 className="my-4 text-2xl text-green-800 font-bold">
+					<h3 className="my-4 text-2xl text-terminal-500 font-bold">
 						Body Type (BT)
 					</h3>
 					<p className="text-lg">
