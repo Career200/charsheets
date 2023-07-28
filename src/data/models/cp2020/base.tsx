@@ -187,8 +187,8 @@ export const baseChar: Char = {
 
 		humanityTotal: 40
 	},
-	notes: ['Type something...'],
-	desc: 'Smallest goon on the block'
+	notes: 'Type something...',
+	desc: 'I am a description. Fill me.'
 };
 
 export const baseAllRoles = [

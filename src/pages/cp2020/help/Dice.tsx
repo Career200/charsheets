@@ -21,9 +21,7 @@ export function Dice() {
 	});
 	const [diceHistory, setDiceHistory] = useState<DiceToss[]>([]);
 
-	const handleToss = (
-		e: React.MouseEvent<HTMLDivElement, MouseEvent>
-	): void => {
+	const handleToss = (e: React.MouseEvent): void => {
 		e.preventDefault();
 		const newRoll = {
 			...rollDice(dice.sides, dice.amount, dice.drop),
@@ -34,11 +32,8 @@ export function Dice() {
 		});
 	};
 	return (
-		<>
-			<div
-				className="hover:shadow-lg hover:shadow-white my-2 p-4 rounded-lg bg-slate-400 text-black select-none"
-				onClick={handleToss}
-			>
+		<div className="bg-black bg-opacity-75">
+			<div className="hover:shadow-lg hover:shadow-white my-2 p-4 rounded-lg bg-slate-400 text-black select-none">
 				<span className="animate-pulse font-bold"> Roll </span>
 				<input
 					type="number"
@@ -101,9 +96,15 @@ export function Dice() {
 						onClick={(e) => e.stopPropagation()}
 					/>
 				</p>
+				<button
+					className="block w-full mt-4 rounded-lg bg-black shadow-md shadow-red-400 text-white"
+					onClick={handleToss}
+				>
+					Roll!
+				</button>
 			</div>
 			<div
-				className="hover:shadow-lg hover:shadow-red-700 my-1 p-1 rounded-lg bg-red-400 text-red-950 text-center font-bold"
+				className="select-none hover:shadow-lg hover:shadow-red-900 my-1 p-1 rounded-lg bg-blood-400 text-red-100 text-center font-bold"
 				onClick={() => setDiceHistory([])}
 			>
 				Clear results
@@ -119,6 +120,6 @@ export function Dice() {
 					))}
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

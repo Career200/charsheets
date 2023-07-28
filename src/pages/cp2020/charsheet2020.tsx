@@ -15,9 +15,11 @@ import Skillbox from './components/Skillbox';
 import Statbox from './components/Statbox';
 import {
 	SpaceMap,
+	exportData,
 	generateId,
 	getData,
 	getMap,
+	handleImport,
 	saveData
 } from '../../data/saveLocal/dataManager';
 
@@ -46,11 +48,16 @@ export default function Charsheet2020() {
 	const [selectedStat, setSelectedStat] = useState<StatString>('INT');
 	const [char, setChar] = useState<Char>(baseChar);
 	const [notesProxy, setNotesProxy] = useState(char.notes);
+	const [descProxy, setDescProxy] = useState(char.desc);
 
-	const loadWindowRef = useRef<any>();
+	// Load Character detect click outside
+	const loadWindowRef = useRef<HTMLDivElement | null>(null);
 	useEffect(() => {
 		function handleClickOutside(e: MouseEvent) {
-			if (loadWindowRef.current && !loadWindowRef.current.contains(e.target)) {
+			if (
+				loadWindowRef.current &&
+				!loadWindowRef.current.contains(e.target as Node)
+			) {
 				setListVisible(false);
 			}
 		}
@@ -60,9 +67,17 @@ export default function Charsheet2020() {
 		};
 	}, [loadWindowRef]);
 
+	// Trigger fileInput on button
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
+	const handleImportButton = () => {
+		if (fileInputRef.current) {
+			fileInputRef.current.click();
+		}
+	};
+
 	const charMap = useRef<SpaceMap>();
-	const totalStats = useRef([]);
-	const totalSkills = useRef(0);
+	//const totalStats = useRef([]);
+	//const totalSkills = useRef(0);
 
 	useEffect(() => {
 		getMap().then((map) => (charMap.current = map));
@@ -225,13 +240,14 @@ export default function Charsheet2020() {
 		});
 	};
 
-	const handleNewCharacter = () => (char.id = generateId());
+	const handleNewCharacter = () => {
+		setChar(baseChar);
+	};
 
 	const saveCharacter = async () => {
 		if (charMap.current !== undefined && char.id) {
 			await saveData(char, char.id, char.name);
 			charMap.current = await getMap();
-			console.log(charMap.current);
 		}
 	};
 
@@ -252,9 +268,9 @@ export default function Charsheet2020() {
 			}}
 			onKeyDown={(e) => e.key !== 'Enter' && e.key !== ' '}
 		>
-			<div className="flex items-center justify-between p-2 border-2 border-black">
-				<div className="px-4 grow flex justify-between flex-wrap gap-2">
-					<div className="flex items-center gap-2">
+			<div className="flex flex-wrap items-center justify-between py-2 px-4 border-2 border-black">
+				<div className="flex flex-wrap justify-between gap-2">
+					<div className="grow flex items-center gap-2">
 						<span>Name: </span>
 						<input
 							type="text"
@@ -281,7 +297,7 @@ export default function Charsheet2020() {
 							))}
 						</select>
 					</div>
-					<div className="flex items-center flex-wrap gap-4">
+					{/* <div className="flex items-center flex-wrap gap-4">
 						WiP
 						<p>
 							Total <span className="text-terminal-400">STATS:</span>{' '}
@@ -291,26 +307,42 @@ export default function Charsheet2020() {
 							Total <span className="text-terminal-400">SKILLS:</span>{' '}
 							{totalSkills.current}
 						</p>
-					</div>
+					</div> */}
 				</div>
-				<div className="relative flex flex-wrap justify-end gap-2">
-					<button
-						type="submit"
-						className="hover:outline hover:outline-slate-400 block p-2 border-2 border-blue-400 bg-blue-950"
-					>
-						Save changes
-					</button>
-					<button
-						type="button"
-						className="hover:outline hover:outline-slate-200 block p-2 border-2 border-yellow-600 bg-violet-950"
-						onClick={() => setListVisible(!listVisible)}
-					>
-						Load character:
-					</button>
+				<div className="relative w-full pt-2 flex flex-wrap gap-4">
+					<div className="flex gap-2">
+						<button
+							type="submit"
+							className="hover:outline hover:outline-slate-400 block p-2 border-2 border-blue-400 bg-blue-950"
+						>
+							Save{' '}
+							{char.id &&
+							charMap.current &&
+							Object.keys(charMap.current).includes(char.id)
+								? 'changes'
+								: 'character'}
+						</button>
+
+						<button
+							type="button"
+							className="hover:outline hover:outline-slate-200 block p-2 border-2 border-yellow-600 bg-violet-950"
+							onClick={() => setListVisible(!listVisible)}
+						>
+							Load character:
+						</button>
+					</div>
+
+					<input
+						type="file"
+						className="hidden"
+						ref={fileInputRef}
+						//! Add file validation!
+						onChange={(e) => handleImport(e, setChar)}
+					/>
 					{listVisible && charMap.current !== undefined && (
 						<div
 							ref={loadWindowRef}
-							className="absolute top-[105%] left-4 min-h-12 max-h-[75vh] overflow-auto w-full p-2 border-orange-800 bg-gray-800"
+							className="absolute z-10 top-[105%] min-w-max max-w-[75vw] min-h-12 max-h-[75vh] overflow-auto  p-2 border-orange-800 bg-gray-800"
 						>
 							<p
 								className="p-2 bg-gray-950 hover:bg-gray-700 cursor-pointer"
@@ -336,24 +368,58 @@ export default function Charsheet2020() {
 							))}
 						</div>
 					)}
+					<div className="flex ml-[8.5rem] gap-2">
+						<button
+							type="button"
+							className="hover:outline hover:outline-red-200 block p-2 border-2 border-red-400 bg-red-950"
+							onClick={handleImportButton}
+						>
+							Import
+						</button>
+						<button
+							type="button"
+							className="hover:outline hover:outline-green-100 block p-2 border-2 border-terminal-400 bg-green-950"
+							onClick={() => exportData(char, char.name + '_' + char.id)}
+						>
+							Export
+						</button>
+					</div>
 				</div>
 			</div>
-			<h4 className="bg-black text-terminal-400 mt-4 py-2 px-4 text-lg">
-				Notes:
-			</h4>
-			<textarea
-				autoComplete="off"
-				className="w-full min-h-[4rem] px-2 bg-black text-terminal-400"
-				value={notesProxy ?? ''}
-				onChange={(e) => {
-					setNotesProxy(e.target.value);
-				}}
-				onBlur={(e) => {
-					setChar((prev) => {
-						return { ...prev, notes: e.target.value };
-					});
-				}}
-			></textarea>
+			<div className="mt-2">
+				<h4 className="bg-black text-terminal-400 px-4 text-lg">
+					Description:
+				</h4>
+				<textarea
+					autoComplete="off"
+					className="w-full px-2 bg-black text-terminal-400"
+					value={descProxy ?? ''}
+					onChange={(e) => {
+						setDescProxy(e.target.value);
+					}}
+					onBlur={(e) => {
+						setChar((prev) => {
+							return { ...prev, desc: e.target.value };
+						});
+					}}
+				></textarea>
+			</div>
+			<div>
+				<h4 className="bg-black text-terminal-400 py-2 px-4 text-lg">Notes:</h4>
+				<textarea
+					autoComplete="off"
+					className="w-full min-h-[4rem] px-2 bg-black text-terminal-400"
+					value={notesProxy ?? ''}
+					onChange={(e) => {
+						setNotesProxy(e.target.value);
+					}}
+					onBlur={(e) => {
+						setChar((prev) => {
+							return { ...prev, notes: e.target.value };
+						});
+					}}
+				></textarea>
+			</div>
 			<hr />
 			<div className="stats p-4 flex justify-around items-center gap-2">
 				<div className="flex flex-wrap gap-4">

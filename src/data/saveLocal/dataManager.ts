@@ -11,6 +11,9 @@ export function generateId(): string {
 	return id;
 }
 
+const formatFilename = (input: string): string =>
+	input.replace(/[\\/:"*?<>|\s\n]/g, '_');
+
 export async function getMap(space = 'CP2020') {
 	const map: SaveMap = await JSON.parse(
 		localStorage.getItem('d1ceSaveMap') || `{"${space}": {}}`
@@ -40,3 +43,35 @@ export function getId(map: SpaceMap, name: string): string | undefined {
 
 export const getData = async (id: string) =>
 	await JSON.parse(localStorage.getItem(id) || '{}');
+
+export function exportData(data: any, fileName: string) {
+	const jsonData = JSON.stringify(data);
+	const blob = new Blob([jsonData], { type: 'application/json' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = formatFilename(fileName) + '.json';
+	a.click();
+	URL.revokeObjectURL(url);
+}
+
+export function handleImport(
+	event: React.ChangeEvent<HTMLInputElement>,
+	callback: (e: any) => void
+) {
+	const file = event.target.files?.[0];
+
+	if (file) {
+		const reader = new FileReader();
+		reader.onload = () => {
+			try {
+				const jsonData = reader.result as string;
+				const importedData = JSON.parse(jsonData);
+				callback(importedData);
+			} catch (error) {
+				console.error('Error importing data:', error);
+			}
+		};
+		reader.readAsText(file);
+	}
+}
