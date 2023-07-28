@@ -22,6 +22,7 @@ import {
 	handleImport,
 	saveData
 } from '../../data/saveLocal/dataManager';
+import useToast from '../../hooks/useToast';
 
 const colorSwitch = (role: Role['name']) => {
 	switch (role) {
@@ -248,6 +249,7 @@ export default function Charsheet2020() {
 		if (charMap.current !== undefined && char.id) {
 			await saveData(char, char.id, char.name);
 			charMap.current = await getMap();
+			useToast('Save successful');
 		}
 	};
 
