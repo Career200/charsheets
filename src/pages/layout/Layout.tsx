@@ -16,7 +16,7 @@ export default function Layout() {
 						<Link to="/CP2020">Character sheet</Link>
 					</li>
 					<li className="p-2 hover:outline outline-1 outline-terminal-400">
-						<Link to="/CP2020help">Utilities</Link>
+						<Link to="/CP2020help">Help</Link>
 					</li>
 					<li className="p-2 hover:outline outline-1 outline-terminal-400">
 						<Link to="/CP2020plain">Stats and Skills</Link>

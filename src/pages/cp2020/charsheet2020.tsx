@@ -23,6 +23,7 @@ import {
 	saveData
 } from '../../data/saveLocal/dataManager';
 import useToast from '../../hooks/useToast';
+import Healthbar from './components/Healthbox';
 
 const colorSwitch = (role: Role['name']) => {
 	switch (role) {
@@ -50,6 +51,9 @@ export default function Charsheet2020() {
 	const [char, setChar] = useState<Char>(baseChar);
 	const [notesProxy, setNotesProxy] = useState(char.notes);
 	const [descProxy, setDescProxy] = useState(char.desc);
+	const [healthProxy, setHealthProxy] = useState<number>(
+		char.health?.damage || 0
+	);
 
 	// Load Character detect click outside
 	const loadWindowRef = useRef<HTMLDivElement | null>(null);
@@ -83,6 +87,9 @@ export default function Charsheet2020() {
 	useEffect(() => {
 		getMap().then((map) => (charMap.current = map));
 		char.id = generateId();
+
+		//
+		char.health = char.health ?? { damage: 0 };
 	}, []);
 
 	useEffect(() => {
@@ -169,7 +176,13 @@ export default function Charsheet2020() {
 				break;
 		}
 		setChar((prev) => {
-			return { ...prev, role: { ...prev.role, special: { name } } };
+			return {
+				...prev,
+				role: {
+					...prev.role,
+					special: { name, value: prev.role.special.value }
+				}
+			};
 		});
 	}, [char.role.name]);
 
@@ -241,6 +254,18 @@ export default function Charsheet2020() {
 		});
 	};
 
+	const handleHealthChange = (newDamage: number) => {
+		setHealthProxy(newDamage);
+		setChar((prev) => {
+			return {
+				...prev,
+				health: {
+					damage: newDamage
+				}
+			};
+		});
+	};
+
 	const handleNewCharacter = () => {
 		setChar(baseChar);
 	};
@@ -253,10 +278,13 @@ export default function Charsheet2020() {
 		}
 	};
 
-	const loadCharacter = async (id: string) => {
-		const char = await getData(id);
-		setChar(char);
-		setNotesProxy(char.notes);
+	const loadCharacter = (id: string) => {
+		getData(id)
+			.then((char) => {
+				setChar(char);
+				setNotesProxy(char.notes);
+			})
+			.catch((err) => useToast(err));
 	};
 
 	return (
@@ -423,6 +451,8 @@ export default function Charsheet2020() {
 				></textarea>
 			</div>
 			<hr />
+			<Healthbar currentChecked={healthProxy} callback={handleHealthChange} />
+			<hr />
 			<div className="stats p-4 flex justify-around items-center gap-2">
 				<div className="flex flex-wrap gap-4">
 					{Object.keys(statMap).map((stat, index) => (
@@ -476,7 +506,7 @@ export default function Charsheet2020() {
 				<div className="flex items-center gap-4">
 					<Skillbox
 						name={char.role.special.name}
-						value={char.role.special.value || 0}
+						value={char.role.special.value}
 						onChange={(e) => handleSpecialAbilityChange(Number(e.target.value))}
 						inputClass="ml-2 outline-orange-400 outline"
 						inputAttr={{ max: 10, min: 0 }}

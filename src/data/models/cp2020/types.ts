@@ -96,14 +96,45 @@ export interface Role {
 			| 'Resources'
 			| 'Streetdeal'
 			| 'Custom Special Ability';
-		value?: number;
+		value: number;
 	};
 }
 
+export interface Health {
+	/* status:
+		| 'LIGHT'
+		| 'SERIOUS'
+		| 'CRITICAL'
+		| 'MORTAL0'
+		| 'MORTAL1'
+		| 'MORTAL2'
+		| 'MORTAL3'
+		| 'MORTAL4'
+		| 'MORTAL5'
+		| 'MORTAL6'; */
+	damage: number;
+}
+export interface Armor {
+	head: number;
+	torso: number;
+	rArm: number;
+	lArm: number;
+	rLeg: number;
+	lLeg: number;
+}
+
+export interface Gear {
+	weapons: any[];
+	cybernetics: any[];
+	other: any[];
+}
 export interface Char {
 	name: string;
 	role: Role;
 	stats: AllStatsType;
+	health?: Health;
+	armor?: Armor;
+	gear?: Gear;
 	computed?: ComputedType;
 	notes?: string;
 	desc?: string;

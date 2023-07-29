@@ -173,20 +173,6 @@ export const baseChar: Char = {
 	name: 'Default',
 	role: defaultRole,
 	stats: baseAllStats,
-	computed: {
-		Body: {
-			type: 'Average',
-			btm: -2
-		},
-		move: {
-			carry: 50,
-			deadlift: 200,
-			run: 18,
-			leap: 4.5
-		},
-
-		humanityTotal: 40
-	},
 	notes: 'Type something...',
 	desc: 'I am a description. Fill me.'
 };
