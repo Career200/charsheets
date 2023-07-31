@@ -5,7 +5,7 @@ export function generateId(): string {
 	const alphanumeric =
 		'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 	let id = '';
-	for (let i = 0; i < 8; i++) {
+	for (let i = 0; i < 16; i++) {
 		id += alphanumeric.charAt(Math.floor(Math.random() * alphanumeric.length));
 	}
 	return id;
@@ -36,6 +36,19 @@ export async function saveData(
 	localStorage.setItem('d1ceSaveMap', JSON.stringify(map));
 }
 
+export async function removeData(
+	id: string,
+	space = 'CP2020') {
+	localStorage.removeItem(id)
+
+	const map: SaveMap = await JSON.parse(
+		localStorage.getItem('d1ceSaveMap') || '{"CP2020":{}}'
+	);
+	delete map[space][id]
+	localStorage.setItem('d1ceSaveMap', JSON.stringify(map));
+	return map[space]
+}
+
 export function getId(map: SpaceMap, name: string): string | undefined {
 	const id = Object.keys(map).find((key) => map[key] === name);
 	return id;
@@ -55,7 +68,7 @@ export function exportData(data: any, fileName: string) {
 	URL.revokeObjectURL(url);
 }
 
-export function handleImport(
+export function importData(
 	event: React.ChangeEvent<HTMLInputElement>,
 	callback: (e: any) => void
 ) {

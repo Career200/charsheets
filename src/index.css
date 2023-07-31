@@ -4,7 +4,7 @@
 * {
 	box-sizing: border-box;
 	margin: 0;
-	transition: 300ms;
+	transition: 150ms;
 }
 html {
 	height: 100%;
