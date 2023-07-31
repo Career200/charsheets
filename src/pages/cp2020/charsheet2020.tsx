@@ -27,6 +27,90 @@ import {
 import useToast from '../../hooks/useToast';
 import Healthbar from './components/Healthbox';
 
+const computeStats = (bt: number, ma:number, emp: number) => {
+	let Body: ComputedType['Body'];
+	switch (bt) {
+		case 0:
+		case 1:
+		case 2: {
+			Body = { type: 'Very Weak', btm: 0 };
+			break;
+		}
+		case 3:
+		case 4: {
+			Body = { type: 'Weak', btm: -1 };
+			break;
+		}
+		case 5:
+		case 6: {
+			Body = { type: 'Average', btm: -2 };
+			break;
+		}
+		case 7:
+		case 8: {
+			Body = { type: 'Strong', btm: -3 };
+			break;
+		}
+		case 9:
+		case 10: {
+			Body = { type: 'Very Strong', btm: -4 };
+			break;
+		}
+		default: {
+			Body = { type: 'Superhuman', btm: -5 };
+		}
+	}
+	const move = {
+		carry: bt * 10,
+		deadlift: bt * 40,
+		run: ma * 3,
+		leap: (ma * 3) / 4
+	};
+	const humanityTotal = emp * 10;
+	const computed: ComputedType = { Body, move, humanityTotal };
+	return computed
+}
+
+const computeSpecialAbility = (role: Role['name']) => {
+	let name: Role['special']['name'];
+	switch (role) {
+		case 'SOLO':
+			name = 'Combat Sense';
+			break;
+		case 'NOMAD':
+			name = 'Family';
+			break;
+		case 'ROCKERBOY':
+			name = 'Charismatic Leadership';
+			break;
+		case 'NETRUNNER':
+			name = 'Interface';
+			break;
+		case 'CORPORATE':
+			name = 'Resources';
+			break;
+		case 'TECHIE':
+			name = 'Jury Rig';
+			break;
+		case 'MEDTECH':
+			name = 'Medical Tech';
+			break;
+		case 'MEDIA':
+			name = 'Credibility';
+			break;
+		case 'COP':
+			name = 'Authority';
+			break;
+		case 'FIXER':
+			name = 'Streetdeal';
+			break;
+		case 'CUSTOM':
+			name = 'Custom Special Ability';
+			break;
+	}
+	return name
+}
+
 const colorSwitch = (role: Role['name']) => {
 	switch (role) {
 		case 'SOLO': {
@@ -83,7 +167,6 @@ export default function Charsheet2020() {
 		}
 	};
 
-
 	//sync id & char.id
 	const id = useRef<string>(char.id||'')
 	useEffect(() => {setChar((prev)=>{return {...prev, id: id.current}})}, [id])
@@ -100,99 +183,28 @@ export default function Charsheet2020() {
 		char.health = char.health ?? { damage: 0 };
 	}, []);
 
-	useEffect(() => {
-		let Body: ComputedType['Body'];
-		switch (char.stats.BT.value) {
-			case 0:
-			case 1:
-			case 2: {
-				Body = { type: 'Very Weak', btm: 0 };
-				break;
-			}
-			case 3:
-			case 4: {
-				Body = { type: 'Weak', btm: -1 };
-				break;
-			}
-			case 5:
-			case 6: {
-				Body = { type: 'Average', btm: -2 };
-				break;
-			}
-			case 7:
-			case 8: {
-				Body = { type: 'Strong', btm: -3 };
-				break;
-			}
-			case 9:
-			case 10: {
-				Body = { type: 'Very Strong', btm: -4 };
-				break;
-			}
-			default: {
-				Body = { type: 'Superhuman', btm: -5 };
-			}
-		}
-		const move = {
-			carry: char.stats.BT.value * 10,
-			deadlift: char.stats.BT.value * 40,
-			run: char.stats.MA.value * 3,
-			leap: (char.stats.MA.value * 3) / 4
-		};
-		const humanityTotal = char.stats.EMP.value * 10;
-		const computed: ComputedType = { Body, move, humanityTotal };
-		setChar((prev) => {
-			return { ...prev, computed };
-		});
-	}, [char.stats.BT, char.stats.MA, char.stats.EMP]);
-
-	useEffect(() => {
-		let name: Role['special']['name'];
-		switch (char.role.name) {
-			case 'SOLO':
-				name = 'Combat Sense';
-				break;
-			case 'NOMAD':
-				name = 'Family';
-				break;
-			case 'ROCKERBOY':
-				name = 'Charismatic Leadership';
-				break;
-			case 'NETRUNNER':
-				name = 'Interface';
-				break;
-			case 'CORPORATE':
-				name = 'Resources';
-				break;
-			case 'TECHIE':
-				name = 'Jury Rig';
-				break;
-			case 'MEDTECH':
-				name = 'Medical Tech';
-				break;
-			case 'MEDIA':
-				name = 'Credibility';
-				break;
-			case 'COP':
-				name = 'Authority';
-				break;
-			case 'FIXER':
-				name = 'Streetdeal';
-				break;
-			case 'CUSTOM':
-				name = 'Custom Special Ability';
-				break;
-		}
+	//Compute Stats
+	const RenderComputed = (char : Char) => {
+		const computed = computeStats(char.stats.BT.value, char.stats.MA.value, char.stats.EMP.value)
+		const name = computeSpecialAbility(char.role.name)
 		setChar((prev) => {
 			return {
 				...prev,
 				role: {
 					...prev.role,
 					special: { name, value: prev.role.special.value }
-				}
+				},
+				computed
 			};
-		});
-	}, [char.role.name]);
+		})
+	}
+	useEffect(() => {
+		RenderComputed(char)
+	}, [char.stats.BT, char.stats.MA, char.stats.EMP, char.role.name]);
+
+	useEffect(() => {
+
+	}, []);
 
 	const handleStatChange = (key: StatString, newSkillValue: number) => {
 		setChar((prevStats) => {
@@ -289,11 +301,12 @@ export default function Charsheet2020() {
 		if (key === undefined) {
 			setChar(baseChar);
 			id.current = generateId()
-		}else{
+		} else {
 			const newChar = await getData(key) as Char
 			setChar(newChar)
 			id.current = key
 		}
+		RenderComputed(char)
 		setNotesProxy(char.notes);
 		setDescProxy(char.desc);
 	};
