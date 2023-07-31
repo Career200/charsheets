@@ -283,6 +283,7 @@ export default function Charsheet2020() {
 			.then((char) => {
 				setChar(char);
 				setNotesProxy(char.notes);
+				setDescProxy(char.desc);
 			})
 			.catch((err) => useToast(err));
 	};
