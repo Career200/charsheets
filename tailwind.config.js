@@ -4,6 +4,7 @@ export default {
 	theme: {
 		extend: {
 			colors: {
+				transblack: '#1415139f',
 				terminal: {
 					400: '#49f626',
 					500: '#3ae817',

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import {MdDeleteForever} from 'react-icons/md'
 
 import { baseAllRoles, baseChar } from '../../data/models/cp2020/base';
 import {
@@ -19,7 +20,8 @@ import {
 	generateId,
 	getData,
 	getMap,
-	handleImport,
+	importData,
+	removeData,
 	saveData
 } from '../../data/saveLocal/dataManager';
 import useToast from '../../hooks/useToast';
@@ -47,6 +49,7 @@ const colorSwitch = (role: Role['name']) => {
 
 export default function Charsheet2020() {
 	const [listVisible, setListVisible] = useState(false);
+	const [charMap, setCharMap] = useState<SpaceMap>();
 	const [selectedStat, setSelectedStat] = useState<StatString>('INT');
 	const [char, setChar] = useState<Char>(baseChar);
 	const [notesProxy, setNotesProxy] = useState(char.notes);
@@ -80,13 +83,18 @@ export default function Charsheet2020() {
 		}
 	};
 
-	const charMap = useRef<SpaceMap>();
+
+	//sync id & char.id
+	const id = useRef<string>(char.id||'')
+	useEffect(() => {setChar((prev)=>{return {...prev, id: id.current}})}, [id])
+
 	//const totalStats = useRef([]);
 	//const totalSkills = useRef(0);
 
+	//
 	useEffect(() => {
-		getMap().then((map) => (charMap.current = map));
-		char.id = generateId();
+		getMap().then((map) => setCharMap(map));
+		id.current = generateId();
 
 		//
 		char.health = char.health ?? { damage: 0 };
@@ -266,29 +274,37 @@ export default function Charsheet2020() {
 		});
 	};
 
-	const handleNewCharacter = () => {
-		setChar(baseChar);
-	};
-
 	const saveCharacter = async () => {
-		if (charMap.current !== undefined && char.id) {
-			await saveData(char, char.id, char.name);
-			charMap.current = await getMap();
-			useToast('Save successful');
+		if (charMap !== undefined && id.current) {
+			try {
+			await saveData(char, id.current, char.name);
+			const newCharMap = await getMap();
+				setCharMap(newCharMap)
+				useToast('Save successful');
+			} catch (err) { useToast('error!'); console.log(err)}
 		}
 	};
 
-	const loadCharacter = (id: string) => {
-		getData(id)
-			.then((char) => {
-				setChar(char);
-				setNotesProxy(char.notes);
-				setDescProxy(char.desc);
-			})
-			.catch((err) => useToast(err));
+	const loadCharacter = async (key?: string) => {
+		if (key === undefined) {
+			setChar(baseChar);
+			id.current = generateId()
+		}else{
+			const newChar = await getData(key) as Char
+			setChar(newChar)
+			id.current = key
+		}
+		setNotesProxy(char.notes);
+		setDescProxy(char.desc);
 	};
 
-	return (
+	const deleteCharacter = async (key: string) => {
+				loadCharacter();
+				const newCharMap = await removeData(key)
+				setCharMap(newCharMap)
+	}
+
+	return (<>
 		<form
 			className={`p-2 h-full text-white ${colorSwitch(
 				char.role.name
@@ -299,6 +315,7 @@ export default function Charsheet2020() {
 			}}
 			onKeyDown={(e) => e.key !== 'Enter' && e.key !== ' '}
 		>
+			{/** HEADER */}
 			<div className="flex flex-wrap items-center justify-between py-2 px-4 border-2 border-black">
 				<div className="flex flex-wrap justify-between gap-2">
 					<div className="grow flex items-center gap-2">
@@ -347,9 +364,9 @@ export default function Charsheet2020() {
 							className="hover:outline hover:outline-slate-400 block p-2 border-2 border-blue-400 bg-blue-950"
 						>
 							Save{' '}
-							{char.id &&
-							charMap.current &&
-							Object.keys(charMap.current).includes(char.id)
+							{id.current &&
+							charMap &&
+							Object.keys(charMap).includes(id.current)
 								? 'changes'
 								: 'character'}
 						</button>
@@ -368,9 +385,9 @@ export default function Charsheet2020() {
 						className="hidden"
 						ref={fileInputRef}
 						//! Add file validation!
-						onChange={(e) => handleImport(e, setChar)}
+						onChange={(e) => importData(e, setChar)}
 					/>
-					{listVisible && charMap.current !== undefined && (
+					{listVisible && charMap !== undefined && (
 						<div
 							ref={loadWindowRef}
 							className="absolute z-10 top-[105%] min-w-max max-w-[75vw] min-h-12 max-h-[75vh] overflow-auto  p-2 border-orange-800 bg-gray-800"
@@ -378,23 +395,30 @@ export default function Charsheet2020() {
 							<p
 								className="p-2 bg-gray-950 hover:bg-gray-700 cursor-pointer"
 								onClick={() => {
-									handleNewCharacter();
+									loadCharacter();
 									setListVisible(false);
 								}}
 							>
 								Create new character
 							</p>
 							<hr />
-							{Object.entries(charMap.current!).map(([key, value], i) => (
+							{Object.entries(charMap).map(([key, value], i) => (
 								<p
-									className="p-2 border-b-[1px] border-gray-500 hover:bg-gray-700 cursor-pointer"
+									className="flex justify-between items-center p-2 border-b-[1px] border-gray-500 hover:bg-gray-700 cursor-pointer"
 									key={key}
 									onClick={() => {
 										loadCharacter(key);
 										setListVisible(false);
 									}}
 								>
-									{i + 1}. {value}
+									<span> {i + 1}. {value}</span>
+									<span
+										className='inline-block py-[1px] rounded-lg bg-blood-600 hover:bg-blood-400 text-white text-3xl'
+										onClick={(e) => {
+											deleteCharacter(key)
+											e.stopPropagation();
+										}}
+									><MdDeleteForever /></span>
 								</p>
 							))}
 						</div>
@@ -410,13 +434,14 @@ export default function Charsheet2020() {
 						<button
 							type="button"
 							className="hover:outline hover:outline-green-100 block p-2 border-2 border-terminal-400 bg-green-950"
-							onClick={() => exportData(char, char.name + '_' + char.id)}
+							onClick={() => exportData(char, char.name + '_' + id.current)}
 						>
 							Export
 						</button>
 					</div>
 				</div>
 			</div>
+			{/** DESCRIPTION */}
 			<div className="mt-2">
 				<h4 className="bg-black text-terminal-400 px-4 text-lg">
 					Description:
@@ -435,6 +460,7 @@ export default function Charsheet2020() {
 					}}
 				></textarea>
 			</div>
+			{/** NOTES */}
 			<div>
 				<h4 className="bg-black text-terminal-400 py-2 px-4 text-lg">Notes:</h4>
 				<textarea
@@ -452,8 +478,10 @@ export default function Charsheet2020() {
 				></textarea>
 			</div>
 			<hr />
+			{/** HEALTHBAR */}
 			<Healthbar currentChecked={healthProxy} callback={handleHealthChange} />
 			<hr />
+			{/** STATS */}
 			<div className="stats p-4 flex justify-around items-center gap-2">
 				<div className="flex flex-wrap gap-4">
 					{Object.keys(statMap).map((stat, index) => (
@@ -503,6 +531,7 @@ export default function Charsheet2020() {
 				</div>
 			</div>
 			<hr />
+			{/** SKILLS */}
 			<div className="p-2">
 				<div className="flex items-center gap-4">
 					<Skillbox
@@ -541,5 +570,6 @@ export default function Charsheet2020() {
 			</div>
 			<hr />
 		</form>
+	</>
 	);
 }
