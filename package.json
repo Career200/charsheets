@@ -11,6 +11,7 @@
     "host": "tsc && vite build && firebase deploy --only hosting:d1ce"
   },
   "dependencies": {
+    "firebase": "^10.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",

@@ -26,12 +26,7 @@ export default function Layout() {
 						</li>
 					</ul>
 				</div>
-				{
-					//! FIX: hover effect on opened window
-				}
-				<div className="py-[1px] border-terminal-400 border-2 bg-terminal-800 hover:bg-terminal-400 hover:text-terminal-800 rounded-xl">
-					<AccountWindow />
-				</div>
+				<AccountWindow />
 			</nav>
 		</div>
 	);
