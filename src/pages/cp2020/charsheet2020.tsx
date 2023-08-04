@@ -340,7 +340,7 @@ export default function Charsheet2020() {
 			>
 				{/** HEADER */}
 				<div className="flex flex-wrap items-center justify-between py-2 px-4 border-2 border-black">
-					<div className="flex flex-wrap justify-between gap-2">
+					<div className="grow flex flex-wrap justify-between gap-2">
 						<div className="grow flex items-center gap-2">
 							<span>Name: </span>
 							<input
@@ -380,7 +380,7 @@ export default function Charsheet2020() {
 						</p>
 					</div> */}
 					</div>
-					<div className="relative w-full pt-2 flex flex-wrap gap-4">
+					<div className="relative w-full pt-2 flex flex-wrap justify-between gap-4">
 						<div className="flex gap-2">
 							<button
 								type="submit"

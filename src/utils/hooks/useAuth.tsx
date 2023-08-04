@@ -3,99 +3,79 @@ import {
 	createUserWithEmailAndPassword,
 	signOut,
 	signInWithPopup,
-	GoogleAuthProvider
+	GoogleAuthProvider,
+	updateProfile,
+	User,
+	deleteUser
 } from 'firebase/auth';
 import { createContext, ReactElement, useContext, useMemo } from 'react';
 import { AUTH } from '../firebase';
-import useLocalStorage from './useLocalStorage';
 
-interface User {
+interface UserData {
 	email: string;
 	password: string;
+	name?: string;
 }
 
 interface AuthContextProps {
-	user: {
-		email: string | null;
-		token: string;
-	} | null;
-	signup: (data: User) => Promise<unknown>;
-	login: (data: User) => Promise<unknown>;
+	getFirebaseUser: () => User | null;
+	setDisplayname: (name: string, callback?: () => void) => Promise<void>;
+	signup: (data: UserData) => Promise<unknown>;
+	login: (data: UserData) => Promise<unknown>;
 	G_login: () => Promise<void>;
 	logout: () => Promise<unknown>;
+	deleteAndSignout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactElement }) => {
-	const [user, setUser] = useLocalStorage<{
-		email: string | null;
-		token: string;
-	} | null>('user', null);
-	const signup = async (data: User) => {
-		try {
-			const credentials = await createUserWithEmailAndPassword(
-				AUTH,
-				data.email,
-				data.password
+	const getFirebaseUser = () => AUTH.currentUser;
+	const setDisplayname = async (name: string, callback?: () => void) => {
+		if (AUTH.currentUser && name.length <= 25) {
+			updateProfile(AUTH.currentUser, { displayName: name }).then(() =>
+				callback?.()
 			);
-			const userData = {
-				email: credentials.user.email,
-				token: credentials.user.uid
-			};
-			setUser(userData);
-		} catch (err) {
-			throw JSON.stringify(err);
-		}
-	};
-	const login = async (data: User) => {
-		try {
-			const credentials = await signInWithEmailAndPassword(
-				AUTH,
-				data.email,
-				data.password
-			);
-			const userData = {
-				email: credentials.user.email,
-				token: credentials.user.uid
-			};
-			setUser(userData);
-		} catch (err) {
-			throw JSON.stringify(err);
-		}
-	};
-	const G_login = async () => {
-		try {
-			const G_AUTH = new GoogleAuthProvider();
-			const credentials = await signInWithPopup(AUTH, G_AUTH);
-			const userData = {
-				email: credentials.user.email,
-				token: credentials.user.uid
-			};
-			setUser(userData);
-		} catch (err) {
-			throw JSON.stringify(err);
 		}
 	};
 
+	const signup = async (data: UserData) => {
+		await createUserWithEmailAndPassword(AUTH, data.email, data.password);
+		data.name ? await setDisplayname(data.name) : null;
+	};
+
+	const login = async (data: UserData) => {
+		await signInWithEmailAndPassword(AUTH, data.email, data.password);
+	};
+
+	const G_login = async () => {
+		const G_AUTH = new GoogleAuthProvider();
+		await signInWithPopup(AUTH, G_AUTH);
+	};
+
 	const logout = async () => {
-		try {
-			await signOut(AUTH);
-			setUser(null);
-		} catch (err) {
-			throw JSON.stringify(err);
+		await signOut(AUTH);
+	};
+
+	const deleteAndSignout = async () => {
+		if (AUTH.currentUser) {
+			await deleteUser(AUTH.currentUser);
 		}
 	};
+
 	const value = useMemo(
 		() => ({
-			user,
+			getFirebaseUser,
+			setDisplayname,
 			signup,
 			login,
 			G_login,
-			logout
+			logout,
+			deleteAndSignout
 		}),
-		[user]
+		[]
 	);
+
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
