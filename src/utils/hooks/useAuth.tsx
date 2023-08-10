@@ -1,3 +1,4 @@
+import { createContext, ReactElement, useContext, useMemo } from 'react';
 import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
@@ -6,9 +7,11 @@ import {
 	GoogleAuthProvider,
 	updateProfile,
 	User,
-	deleteUser
+	deleteUser,
+	//signInAnonymously,
+	UserCredential
+	//getAdditionalUserInfo
 } from 'firebase/auth';
-import { createContext, ReactElement, useContext, useMemo } from 'react';
 import { AUTH } from '../firebase';
 
 interface UserData {
@@ -20,9 +23,10 @@ interface UserData {
 interface AuthContextProps {
 	getFirebaseUser: () => User | null;
 	setDisplayname: (name: string, callback?: () => void) => Promise<void>;
-	signup: (data: UserData) => Promise<unknown>;
-	login: (data: UserData) => Promise<unknown>;
-	G_login: () => Promise<void>;
+	//signInAnon: () => Promise<UserCredential>;
+	signup: (data: UserData) => Promise<UserCredential>;
+	login: (data: UserData) => Promise<UserCredential>;
+	G_login: () => Promise<UserCredential>;
 	logout: () => Promise<unknown>;
 	deleteAndSignout: () => Promise<void>;
 }
@@ -39,27 +43,39 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
 		}
 	};
 
+	//const signInAnon = async () => await signInAnonymously(AUTH);
+
 	const signup = async (data: UserData) => {
-		await createUserWithEmailAndPassword(AUTH, data.email, data.password);
+		const cred = await createUserWithEmailAndPassword(
+			AUTH,
+			data.email,
+			data.password
+		);
+		/* 		if (getAdditionalUserInfo(cred)?.isNewUser) {
+
+		} */
 		data.name ? await setDisplayname(data.name) : null;
+		return cred;
 	};
 
 	const login = async (data: UserData) => {
-		await signInWithEmailAndPassword(AUTH, data.email, data.password);
+		return await signInWithEmailAndPassword(AUTH, data.email, data.password);
 	};
 
 	const G_login = async () => {
 		const G_AUTH = new GoogleAuthProvider();
-		await signInWithPopup(AUTH, G_AUTH);
+		return await signInWithPopup(AUTH, G_AUTH);
 	};
 
 	const logout = async () => {
-		await signOut(AUTH);
+		if (AUTH.currentUser) {
+			return await signOut(AUTH);
+		}
 	};
 
 	const deleteAndSignout = async () => {
 		if (AUTH.currentUser) {
-			await deleteUser(AUTH.currentUser);
+			return await deleteUser(AUTH.currentUser);
 		}
 	};
 
@@ -67,6 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
 		() => ({
 			getFirebaseUser,
 			setDisplayname,
+			//signInAnon,
 			signup,
 			login,
 			G_login,
