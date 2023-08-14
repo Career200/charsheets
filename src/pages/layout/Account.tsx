@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
-import { useAuth } from '../../utils/hooks/useAuth';
-import useToast from '../../utils/hooks/useToast';
+import { useState, useRef, useEffect } from "react";
+import { useAuth } from "../../utils/hooks/useAuth";
+import useToast from "../../utils/hooks/useToast";
 
-import googleSignInIcon from '/src/assets/btn_google_signin_light_normal_web.png';
-import { AUTH } from '../../utils/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import googleSignInIcon from "/src/assets/btn_google_signin_light_normal_web.png";
+import { AUTH } from "../../utils/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { getRandomAvatar } from "../../utils/getRandomAvatar";
 
 type AccountProps = {
 	buttonClassName: string;
@@ -19,10 +20,11 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 
 	const [error, setError] = useState(false);
 
-	const [email, setEmail] = useState('');
+	const [email, setEmail] = useState("");
 	const [username, setUsername] = useState<string | undefined>();
-	const [password, setPassword] = useState('');
-	const [passwordRepeat, setPasswordRepeat] = useState('');
+	const [avatar, setAvatar] = useState(getRandomAvatar());
+	const [password, setPassword] = useState("");
+	const [passwordRepeat, setPasswordRepeat] = useState("");
 	const [passwordsMatch, setPasswordsMatch] = useState(true);
 
 	const accountWindowRef = useRef<HTMLDivElement | null>(null);
@@ -39,9 +41,9 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 				setIsShown(false);
 			}
 		}
-		document.addEventListener('mousedown', handleClickOutside);
+		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
+			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, [accountWindowRef]);
 	//sync password repeat verification
@@ -53,20 +55,22 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 
 	useEffect(() => {
 		onAuthStateChanged(AUTH, (data) => {
-			setEmail('');
-			setPassword('');
-			setPasswordRepeat('');
+			setEmail("");
+			setPassword("");
+			setPasswordRepeat("");
 			if (!data) {
 				setIsLoggedIn(false);
+				setAvatar(getRandomAvatar());
 				return;
 			}
 			setIsLoggedIn(true);
-			setUsername(data.displayName || 'choom');
+			setUsername(data.displayName || "choom");
+			setAvatar(data.photoURL || "");
 		});
 	}, []);
 
 	const handleLogin = () => {
-		if (email !== '' && password !== '') {
+		if (email !== "" && password !== "") {
 			login({ email, password }).catch((err) => {
 				setError(true);
 				useToast(err.code);
@@ -83,20 +87,21 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 	};
 
 	const handleSignup = async () => {
-		if (email !== '' && password !== '' && password === passwordRepeat) {
-			signup({ email, password })
-				.then(() => handleLogin)
-				.catch((err) => {
-					setError(true);
-					useToast(err.code);
-					console.log(err);
-				});
+		if (email !== "" && password !== "" && password === passwordRepeat) {
+			signup({ email, password }).catch((err) => {
+				setError(true);
+				useToast(err.code);
+				console.log(err);
+			});
 		}
 	};
 
 	const handleLogout = async () => {
 		logout()
-			.then(() => setIsLoggedIn(false))
+			.then(() => {
+				setIsLoggedIn(false);
+				setAvatar(getRandomAvatar());
+			})
 			.catch((err) => {
 				setError(true);
 				useToast(err.code);
@@ -125,7 +130,17 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 				ref={accountButtonRef}
 				onClick={() => setIsShown(!isShown)}
 			>
-				<p className="p-1">{isLoggedIn ? username : 'Log in'}</p>
+				<p className="p-1">
+					<span className="hidden phone:inline mr-2">
+						{isLoggedIn ? username : "Log in"}
+					</span>
+					<img
+						src={avatar}
+						alt="avatar"
+						className="inline"
+						style={{ maxHeight: "50px", maxWidth: "50px" }}
+					/>
+				</p>
 			</button>
 			{isShown && (
 				<div
@@ -136,9 +151,8 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 				>
 					{isLoggedIn ? (
 						<div>
-							<p>Hi there, {username}</p>
 							<p>
-								What's your <span className="text-blue-600 mr-2">NAME?</span>
+								Hi there,
 								<input
 									type="text"
 									maxLength={25}
@@ -172,7 +186,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 											Email
 											<input
 												className={`grow px-2 bg-olive-600 ${
-													error ? 'border-red-600 border-2' : ''
+													error ? "border-red-600 border-2" : ""
 												}`}
 												onChange={(e) => {
 													setError(false);
@@ -188,7 +202,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 											Password
 											<input
 												className={`grow px-2 bg-olive-600 ${
-													error ? 'border-red-600 border-2' : ''
+													error ? "border-red-600 border-2" : ""
 												}`}
 												onChange={(e) => {
 													setError(false);
@@ -211,8 +225,8 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 										className="mt-3 text-center text-sm cursor-pointer"
 										onClick={() => setIsLoginPage(false)}
 									>
-										Don’t have an account?{' '}
-										<span className="text-blue-400">Sign up</span>
+										Don’t have an account?{" "}
+										<button className="text-blue-400">Sign up</button>
 									</p>
 									<div className="m-2 flex justify-center">
 										<button
@@ -234,7 +248,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 										Email
 										<input
 											className={`grow px-2 bg-olive-600 ${
-												error ? 'border-red-600 border-2' : ''
+												error ? "border-red-600 border-2" : ""
 											}`}
 											type="email"
 											name="email"
@@ -247,7 +261,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 										Password
 										<input
 											className={`grow px-2 bg-olive-600 ${
-												error ? 'border-red-600 border-2' : ''
+												error ? "border-red-600 border-2" : ""
 											}`}
 											type="password"
 											name="password"
@@ -263,7 +277,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 										Repeat
 										<input
 											className={`grow px-2 bg-olive-600 ${
-												error ? 'border-red-600 border-2' : ''
+												error ? "border-red-600 border-2" : ""
 											}`}
 											type="password"
 											name="passwordRepeat"
@@ -291,8 +305,8 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 										className="mt-3 text-center text-sm cursor-pointer"
 										onClick={() => setIsLoginPage(true)}
 									>
-										Already have an account?{' '}
-										<span className="text-blue-400">Log in</span>
+										Already have an account?{" "}
+										<button className="text-blue-400">Log in</button>
 									</p>
 								</div>
 							)}

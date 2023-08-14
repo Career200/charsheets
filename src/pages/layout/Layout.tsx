@@ -1,5 +1,5 @@
-import { Link, Outlet } from 'react-router-dom';
-import AccountWindow from './Account';
+import { Link, Outlet } from "react-router-dom";
+import AccountWindow from "./Account";
 
 export default function Layout() {
 	return (
@@ -18,21 +18,23 @@ export default function Layout() {
 							Cyberpunk 2020<span className="animate-pulse">_</span>
 						</p>
 					</div>
-					<div>
+				</div>
+				<div className="mt-2 flex justify-between items-center">
+					<ul className="text-xs sm:text-base flex justify-between items-center sm:gap-8">
+						<li className="p-2 hover:outline outline-1 outline-terminal-400">
+							<Link to="/CP2020">Charsheet</Link>
+						</li>
+						<li className="p-2 hover:outline outline-1 outline-terminal-400">
+							<Link to="/CP2020help">Help</Link>
+						</li>
+						<li className="p-2 hover:outline outline-1 outline-terminal-400">
+							<Link to="/CP2020plain">Stats/ Skills</Link>
+						</li>
+					</ul>
+					<div className="relative bottom-4 sm:bottom-6">
 						<AccountWindow buttonClassName="min-w-[100px] p-[1px] border-terminal-400 border-2 bg-terminal-800 hover:bg-terminal-400 hover:text-terminal-800 text-xs sm:text-sm font-major whitespace-nowrap" />
 					</div>
 				</div>
-				<ul className="mt-2 flex justify-between items-center gap-4 sm:gap-8">
-					<li className="p-2 hover:outline outline-1 outline-terminal-400">
-						<Link to="/CP2020">Charsheet</Link>
-					</li>
-					<li className="p-2 hover:outline outline-1 outline-terminal-400">
-						<Link to="/CP2020help">Help</Link>
-					</li>
-					<li className="p-2 hover:outline outline-1 outline-terminal-400">
-						<Link to="/CP2020plain">Stats/ Skills</Link>
-					</li>
-				</ul>
 			</nav>
 		</div>
 	);
