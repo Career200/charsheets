@@ -9,7 +9,7 @@
 
 ### As...
 
-...an aspiring GM, Dungeon-master, Hakunin (twas a Fallout online RPG), Referee and a Master of Ceremonies, I longed to have more support for somewhat obscure role-playing systems, such as Cyberpunk 2020 (the OG as they say) and Farflung (that's a weird one, right) for years. This is why I ultimately decided that what exists for extremely popular systems, such as D&D and very specifically Pathfinder 2e ([pathbuilder, I'm referring to you](https://pathbuilder2e.com/app.html)), should also exist for the cybered-up gonks and cosmic fluffs of the world (i.e. my players).
+...an aspiring GM, Dungeon-master, Hakunin (twas a Fallout online RPG), Referee and a Master of Ceremonies, I longed to have more support for somewhat obscure role-playing systems, such as Cyberpunk 2020 (the OG as they say) and Farflung (that's a weird one, right) for years. This is why I ultimately decided that what exists for extremely popular systems, such as D&D` and very specifically Pathfinder 2e ([pathbuilder, I'm referring to you](https://pathbuilder2e.com/app.html)), should also exist for the cybered-up gonks and cosmic fluffs of the world (i.e. my players).
 
 ### So...
 
