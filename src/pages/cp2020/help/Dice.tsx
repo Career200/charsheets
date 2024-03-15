@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { rollDice } from './helpers';
+import { rollDice } from '../utils/helpers'
 
 type Dice = {
 	sides: number;
