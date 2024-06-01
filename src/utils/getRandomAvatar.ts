@@ -1,5 +1,9 @@
 const avatars = Object.values(
-	import.meta.glob("@avatar/*.png", { eager: true, as: "url" })
+	import.meta.glob("@avatar/*.png", {
+		eager: true,
+		query: "?url",
+		import: "default",
+	})
 );
 
 export const getRandomAvatar = () =>
