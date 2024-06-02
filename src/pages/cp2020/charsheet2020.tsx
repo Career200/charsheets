@@ -1,18 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
-import { MdDeleteForever } from 'react-icons/md';
+import { useEffect, useRef, useState } from "react";
+import { MdDeleteForever } from "react-icons/md";
 
-import { baseAllRoles, baseChar } from '../../data/models/cp2020/base';
+import { baseAllRoles, baseChar } from "../../data/models/cp2020/base";
 import {
 	AllSkillsStrings,
 	AllStatsType,
 	Char,
 	Role,
 	StatString,
-	statMap
-} from '../../data/models/cp2020/types';
+	statMap,
+} from "../../store/cyberpunk/charsheet/types";
 
-import Skillbox from './components/Skillbox';
-import Statbox from './components/Statbox';
+import Skillbox from "./components/Skillbox";
+import Statbox from "./components/Statbox";
 import {
 	SpaceMap,
 	exportData,
@@ -21,17 +21,16 @@ import {
 	getMap,
 	importData,
 	removeData,
-	saveData
-} from '../../data/saveLocal/dataManager';
-import useToast from '../../utils/hooks/useToast';
-import Healthbar from './components/Healthbox';
-import { colorSwitch, computeSpecialAbility, computeStats } from './utils';
-
+	saveData,
+} from "../../data/saveLocal/dataManager";
+import useToast from "../../utils/hooks/useToast";
+import Healthbar from "./components/Healthbox";
+import { colorSwitch, computeSpecialAbility, computeStats } from "./utils";
 
 export default function Charsheet2020() {
 	const [listVisible, setListVisible] = useState(false);
 	const [charMap, setCharMap] = useState<SpaceMap>();
-	const [selectedStat, setSelectedStat] = useState<StatString>('INT');
+	const [selectedStat, setSelectedStat] = useState<StatString>("INT");
 	const [char, setChar] = useState<Char>(baseChar);
 	const [notesProxy, setNotesProxy] = useState(char.notes);
 	const [descProxy, setDescProxy] = useState(char.desc);
@@ -50,9 +49,9 @@ export default function Charsheet2020() {
 				setListVisible(false);
 			}
 		}
-		document.addEventListener('mousedown', handleClickOutside);
+		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
+			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, [loadWindowRef]);
 
@@ -65,7 +64,7 @@ export default function Charsheet2020() {
 	};
 
 	//sync id & char.id
-	const id = useRef<string>(char.id || '');
+	const id = useRef<string>(char.id || "");
 	useEffect(() => {
 		setChar((prev) => {
 			return { ...prev, id: id.current };
@@ -97,9 +96,9 @@ export default function Charsheet2020() {
 				...prev,
 				role: {
 					...prev.role,
-					special: { name, value: prev.role.special.value }
+					special: { name, value: prev.role.special.value },
 				},
-				computed
+				computed,
 			};
 		});
 	};
@@ -115,12 +114,12 @@ export default function Charsheet2020() {
 				...prevStats.stats,
 				[key]: {
 					...prevStats.stats[key],
-					value: newSkillValue
-				}
+					value: newSkillValue,
+				},
 			};
 			return {
 				...prevStats,
-				stats: updatedStats
+				stats: updatedStats,
 			};
 		});
 	};
@@ -136,14 +135,14 @@ export default function Charsheet2020() {
 						[key]: {
 							//@ts-expect-error
 							...prevStats.stats![selectedStat].skills![key],
-							value: newSkillValue
-						}
-					}
-				}
+							value: newSkillValue,
+						},
+					},
+				},
 			};
 			const x = {
 				...prevStats,
-				stats: updatedStats
+				stats: updatedStats,
 			};
 			return x;
 		});
@@ -153,11 +152,11 @@ export default function Charsheet2020() {
 		setChar((prevStats) => {
 			const role: Role = {
 				...prevStats.role,
-				name: e.target.value as Role['name']
+				name: e.target.value as Role["name"],
 			};
 			return {
 				...prevStats,
-				role
+				role,
 			};
 		});
 	};
@@ -170,9 +169,9 @@ export default function Charsheet2020() {
 					...prev.role,
 					special: {
 						name: prev.role.special.name,
-						value: newSkillValue
-					}
-				}
+						value: newSkillValue,
+					},
+				},
 			};
 		});
 	};
@@ -183,8 +182,8 @@ export default function Charsheet2020() {
 			return {
 				...prev,
 				health: {
-					damage: newDamage
-				}
+					damage: newDamage,
+				},
 			};
 		});
 	};
@@ -195,9 +194,9 @@ export default function Charsheet2020() {
 				await saveData(char, id.current, char.name);
 				const newCharMap = await getMap();
 				setCharMap(newCharMap);
-				useToast('Save successful');
+				useToast("Save successful");
 			} catch (err) {
-				useToast('error!');
+				useToast("error!");
 				console.log(err);
 			}
 		}
@@ -233,7 +232,7 @@ export default function Charsheet2020() {
 					e.preventDefault();
 					saveCharacter();
 				}}
-				onKeyDown={(e) => e.key !== 'Enter' && e.key !== ' '}
+				onKeyDown={(e) => e.key !== "Enter" && e.key !== " "}
 			>
 				{/** HEADER */}
 				<div className="flex flex-wrap items-center justify-between py-2 px-4 border-2 border-black">
@@ -283,12 +282,12 @@ export default function Charsheet2020() {
 								type="submit"
 								className="hover:outline hover:outline-slate-400 block p-2 border-2 border-blue-400 bg-blue-950"
 							>
-								Save{' '}
+								Save{" "}
 								{id.current &&
 								charMap &&
 								Object.keys(charMap).includes(id.current)
-									? 'changes'
-									: 'character'}
+									? "changes"
+									: "character"}
 							</button>
 
 							<button
@@ -332,7 +331,7 @@ export default function Charsheet2020() {
 										}}
 									>
 										<span>
-											{' '}
+											{" "}
 											{i + 1}. {value}
 										</span>
 										<span
@@ -359,7 +358,7 @@ export default function Charsheet2020() {
 							<button
 								type="button"
 								className="hover:outline hover:outline-green-100 block p-2 border-2 border-terminal-400 bg-green-950"
-								onClick={() => exportData(char, char.name + '_' + id.current)}
+								onClick={() => exportData(char, char.name + "_" + id.current)}
 							>
 								Export
 							</button>
@@ -374,7 +373,7 @@ export default function Charsheet2020() {
 					<textarea
 						autoComplete="off"
 						className="w-full px-2 bg-black text-terminal-400"
-						value={descProxy ?? ''}
+						value={descProxy ?? ""}
 						onChange={(e) => {
 							setDescProxy(e.target.value);
 						}}
@@ -393,7 +392,7 @@ export default function Charsheet2020() {
 					<textarea
 						autoComplete="off"
 						className="w-full min-h-[4rem] px-2 bg-black text-terminal-400"
-						value={notesProxy ?? ''}
+						value={notesProxy ?? ""}
 						onChange={(e) => {
 							setNotesProxy(e.target.value);
 						}}
@@ -417,7 +416,7 @@ export default function Charsheet2020() {
 								stat={stat as StatString}
 								value={char.stats[stat as StatString].value}
 								onClick={() =>
-									stat !== 'LUCK' && stat !== 'MA'
+									stat !== "LUCK" && stat !== "MA"
 										? setSelectedStat(stat as StatString)
 										: null
 								}
@@ -427,7 +426,7 @@ export default function Charsheet2020() {
 										Number(e.currentTarget.value)
 									)
 								}
-								inputAttr={{ max: stat === 'BT' ? 20 : 10, min: 1 }}
+								inputAttr={{ max: stat === "BT" ? 20 : 10, min: 1 }}
 							/>
 						))}
 					</div>
@@ -473,7 +472,7 @@ export default function Charsheet2020() {
 						<p>
 							<span className="text-terminal-400 text-2xl font-bold">
 								{selectedStat}
-							</span>{' '}
+							</span>{" "}
 							skills:
 						</p>
 					</div>
