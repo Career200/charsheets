@@ -1,29 +1,29 @@
 const groupNames = [
-	{ modifier: 0, name: 'LIGHT' },
-	{ modifier: -1, name: 'SERIOUS' },
-	{ modifier: -2, name: 'CRITICAL' },
-	{ modifier: -3, name: 'MORTAL0' },
-	{ modifier: -4, name: 'MORTAL1' },
-	{ modifier: -5, name: 'MORTAL2' },
-	{ modifier: -6, name: 'MORTAL3' },
-	{ modifier: -7, name: 'MORTAL4' },
-	{ modifier: -8, name: 'MORTAL5' },
-	{ modifier: -9, name: 'MORTAL6' }
+	{ modifier: 0, name: "LIGHT" },
+	{ modifier: -1, name: "SERIOUS" },
+	{ modifier: -2, name: "CRITICAL" },
+	{ modifier: -3, name: "MORTAL0" },
+	{ modifier: -4, name: "MORTAL1" },
+	{ modifier: -5, name: "MORTAL2" },
+	{ modifier: -6, name: "MORTAL3" },
+	{ modifier: -7, name: "MORTAL4" },
+	{ modifier: -8, name: "MORTAL5" },
+	{ modifier: -9, name: "MORTAL6" },
 ];
 
 export default function Healthbar({
-	currentChecked,
-	callback
+	currentDamage,
+	onChecked,
 }: {
-	currentChecked: number;
-	callback: (checked: number) => void;
+	currentDamage: number;
+	onChecked: (checked: number) => void;
 }) {
 	const groups = Array.from({ length: 10 }, (_, index) => {
 		const groupNumber = index + 1;
 		return {
 			groupNumber,
 			text: groupNames[index].name,
-			subtext: groupNames[index].modifier
+			subtext: groupNames[index].modifier,
 		};
 	});
 
@@ -34,8 +34,8 @@ export default function Healthbar({
 				<input
 					className="h-5 w-5 cursor-pointer"
 					type="checkbox"
-					checked={currentChecked === 0}
-					onChange={() => callback(0)}
+					checked={currentDamage === 0}
+					onChange={() => onChecked(0)}
 				/>
 			</p>
 			<div className="mb-2 flex flex-wrap justify-center gap-4">
@@ -53,8 +53,8 @@ export default function Healthbar({
 										className="h-5 w-5 cursor-pointer"
 										key={index}
 										type="checkbox"
-										checked={checkboxNumber <= currentChecked}
-										onChange={() => callback(checkboxNumber)}
+										checked={checkboxNumber <= currentDamage}
+										onChange={() => onChecked(checkboxNumber)}
 									/>
 								);
 							})}

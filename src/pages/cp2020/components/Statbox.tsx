@@ -1,16 +1,16 @@
-import TooltipWrapper from '../../../components/TooltipWrap/TooltipWrap';
-import { StatString, statMap } from '../../../data/models/cp2020/types';
+import TooltipWrapper from "../../../components/TooltipWrap/TooltipWrap";
+import { StatString, statMap } from "../../../store/cyberpunk/charsheet/types";
 
 export default function Statbox({
 	stat,
 	value,
-	onClick,
+	onMouseEnter,
 	onChange,
-	inputAttr
+	inputAttr,
 }: {
 	stat: StatString;
 	value: number;
-	onClick?: (e?: React.MouseEvent<HTMLHeadingElement, MouseEvent>) => void;
+	onMouseEnter?: (e?: React.MouseEvent<HTMLHeadingElement, MouseEvent>) => void;
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	inputAttr?: React.DetailedHTMLProps<
 		React.InputHTMLAttributes<HTMLInputElement>,
@@ -22,9 +22,9 @@ export default function Statbox({
 			<div
 				className="select-none"
 				tabIndex={0}
-				onClick={onClick}
+				onMouseEnter={onMouseEnter}
 				onKeyDown={(e) =>
-					e.key === 'Enter' || e.key === ' ' ? onClick?.() : null
+					e.key === "Enter" || e.key === " " ? onMouseEnter?.() : null
 				}
 			>
 				<h4 className="flex flex-col justify-center items-center gap-2 shrink-0 hover:outline hover:outline-orange-600 p-2 border-2 border-orange-900 text-xl">
