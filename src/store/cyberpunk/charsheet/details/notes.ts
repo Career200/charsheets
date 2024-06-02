@@ -1,37 +1,20 @@
-import { action, makeAutoObservable } from "mobx";
-
-export class Note {
-	name?: string;
-	value: string;
-	constructor(name: string, value = "") {
-		this.name = name;
-		this.value = value;
-		makeAutoObservable(this);
-	}
-	@action updateNote = ({ name, value }: { name: string; value: string }) => {
-		this.name = name;
-		this.value = value;
-	};
-}
+import { makeAutoObservable } from "mobx";
 
 export class Details {
 	description: string;
-	notes: Note[];
+	notes: string;
 	constructor(
 		description: string = "I am a description. Fill me.",
-		notes: Note[] = []
+		notes = ""
 	) {
 		this.description = description;
 		this.notes = notes;
 		makeAutoObservable(this);
 	}
-	@action setDescription = (description: string) => {
+	setDescription = (description: string) => {
 		this.description = description;
 	};
-	@action addNote = (note: Note) => {
-		this.notes.push(note);
-	};
-	@action removeNote = (note: Note) => {
-		this.notes = this.notes.filter((n) => n !== note);
+	setNotes = (notes: string) => {
+		this.notes = notes;
 	};
 }
