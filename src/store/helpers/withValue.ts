@@ -1,18 +1,20 @@
-import { action, makeAutoObservable } from "mobx";
+import { makeObservable, observable } from "mobx";
 
 export class WithValue {
 	value: number;
 	constructor(value = 0) {
 		this.value = value;
-		makeAutoObservable(this);
+		makeObservable(this, {
+			value: observable,
+		});
 	}
-	@action setValue = (value: number) => {
+	setValue = (value: number) => {
 		this.value = value;
 	};
-	@action increaseValue = () => {
+	increaseValue = () => {
 		this.value++;
 	};
-	@action decreaseValue = () => {
+	decreaseValue = () => {
 		this.value--;
 	};
 }
