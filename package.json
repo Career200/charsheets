@@ -11,28 +11,29 @@
     "host": "tsc && vite build && firebase deploy --only hosting:d1ce"
   },
   "dependencies": {
-    "firebase": "^10.1.0",
+    "firebase": "^12.16.0",
     "react": "^19.0.0-rc-6d3110b4d9-20240531",
     "react-dom": "^19.0.0-rc-6d3110b4d9-20240531",
     "react-icons": "^4.10.1",
     "react-router-dom": "^6.14.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.0",
     "@babel/plugin-proposal-decorators": "^7.24.6",
     "@types/react": "npm:types-react@rc",
     "@types/react-dom": "npm:types-react-dom@rc",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.38.0",
+    "eslint-config-prettier": "^9.1.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
     "postcss": "^8.4.24",
     "tailwindcss": "^3.3.2",
     "typescript": "^5.4.5",
-    "vite": "^5.2.12"
+    "vite": "^7.3.6"
   },
   "overrides": {
     "@types/react": "npm:types-react@rc",

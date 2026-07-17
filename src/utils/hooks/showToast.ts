@@ -1,4 +1,4 @@
-export default function useToast(message: string, duration = 2000) {
+export default function showToast(message: string, duration = 2000) {
 	const toastElement = document.createElement('div');
 	toastElement.className = 'toast';
 	toastElement.textContent = message;
