@@ -23,7 +23,7 @@ import {
 	removeData,
 	saveData
 } from '../../data/saveLocal/dataManager';
-import useToast from '../../utils/hooks/useToast';
+import showToast from '../../utils/hooks/showToast';
 import Healthbar from './components/Healthbox';
 import { colorSwitch, computeSpecialAbility, computeStats } from './utils';
 
@@ -82,6 +82,7 @@ export default function Charsheet2020() {
 
 		//
 		char.health = char.health ?? { damage: 0 };
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount to initialise
 	}, []);
 
 	//Compute Stats
@@ -105,9 +106,8 @@ export default function Charsheet2020() {
 	};
 	useEffect(() => {
 		RenderComputed(char);
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- recompute only when these inputs change
 	}, [char.stats.BT, char.stats.MA, char.stats.EMP, char.role.name]);
-
-	useEffect(() => {}, []);
 
 	const handleStatChange = (key: StatString, newSkillValue: number) => {
 		setChar((prevStats) => {
@@ -134,7 +134,7 @@ export default function Charsheet2020() {
 					skills: {
 						...prevStats.stats[selectedStat].skills,
 						[key]: {
-							//@ts-expect-error
+							//@ts-expect-error index signature on nested skills map is not statically resolvable
 							...prevStats.stats![selectedStat].skills![key],
 							value: newSkillValue
 						}
@@ -195,9 +195,9 @@ export default function Charsheet2020() {
 				await saveData(char, id.current, char.name);
 				const newCharMap = await getMap();
 				setCharMap(newCharMap);
-				useToast('Save successful');
+				showToast('Save successful');
 			} catch (err) {
-				useToast('error!');
+				showToast('error!');
 				console.log(err);
 			}
 		}

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../utils/hooks/useAuth";
-import useToast from "../../utils/hooks/useToast";
+import showToast from "../../utils/hooks/showToast";
 
 import googleSignInIcon from "/src/assets/btn_google_signin_light_normal_web.png";
 import { AUTH } from "../../utils/firebase";
@@ -51,6 +51,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 		if (!isLoginPage) {
 			setPasswordsMatch(password === passwordRepeat);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- only re-sync when the password fields change
 	}, [password, passwordRepeat]);
 
 	useEffect(() => {
@@ -73,7 +74,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 		if (email !== "" && password !== "") {
 			login({ email, password }).catch((err) => {
 				setError(true);
-				useToast(err.code);
+				showToast(err.code);
 				console.log(err);
 			});
 		}
@@ -81,7 +82,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 	const handleGLogin = () => {
 		G_login().catch((err) => {
 			setError(true);
-			useToast(err.code);
+			showToast(err.code);
 			console.log(err);
 		});
 	};
@@ -90,7 +91,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 		if (email !== "" && password !== "" && password === passwordRepeat) {
 			signup({ email, password }).catch((err) => {
 				setError(true);
-				useToast(err.code);
+				showToast(err.code);
 				console.log(err);
 			});
 		}
@@ -104,7 +105,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 			})
 			.catch((err) => {
 				setError(true);
-				useToast(err.code);
+				showToast(err.code);
 				console.log(err);
 			});
 	};
@@ -117,7 +118,7 @@ export default function AccountWindow({ buttonClassName }: AccountProps) {
 		) {
 			deleteAndSignout().catch((err) => {
 				setError(true);
-				useToast(err.code);
+				showToast(err.code);
 				console.log(err);
 			});
 		}

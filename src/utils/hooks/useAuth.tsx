@@ -90,12 +90,14 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
 			logout,
 			deleteAndSignout
 		}),
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- auth callbacks are stable for the provider's lifetime
 		[]
 	);
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components -- idiomatic to co-locate the hook with its provider
 export const useAuth = (): AuthContextProps => {
 	const context = useContext(AuthContext);
 	if (!context) {
